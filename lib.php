@@ -75,11 +75,11 @@ function pdfjsfolder_supports($feature) {
  * Adds a pdfjsfolder instance.
  *
  * @param stdClass      $data   The data submitted
- * @param stdClass|null $form   The pdfjsfolder form
+ * @param mod_pdfjsfolder_mod_form|null $form   The pdfjsfolder form
  *
  * @return int The instance id of the new pdfjsfolder instance
  */
-function pdfjsfolder_add_instance(stdClass $data, ?stdClass $form = null) {
+function pdfjsfolder_add_instance(stdClass $data, ?mod_pdfjsfolder_mod_form $form = null) {
     include_once(dirname(__FILE__) . '/locallib.php');
 
     $context = context_module::instance($data->coursemodule);

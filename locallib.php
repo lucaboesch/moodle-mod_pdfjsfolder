@@ -101,6 +101,7 @@ class pdfjsfolder {
         $add->course = $formdata->course;
         $add->courseid = $formdata->course;
         $add->intro = $formdata->intro;
+        $add->introformat = $formdata->introformat;
         $add->display = $formdata->display;
         $add->showexpanded = $formdata->showexpanded;
         $add->showfilechangeswarning = $formdata->showfilechangeswarning;
@@ -159,6 +160,7 @@ class pdfjsfolder {
         $update->timemodified = time();
         $update->course = $formdata->course;
         $update->intro = $formdata->intro;
+        $update->introformat = $formdata->introformat;
         $update->display = $formdata->display;
         $update->showexpanded = $formdata->showexpanded;
         $update->showfilechangeswarning = $formdata->showfilechangeswarning;
