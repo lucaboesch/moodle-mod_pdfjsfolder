@@ -1,3 +1,10 @@
+0.2   -  Updated PDF.js library to version 5.1.91.
+
+      -  Added feature allowing display of warning regarding user data in
+         PDF files edited with PDF.js.
+
+      -  Added Moodle 4.5+ compatibility as well as a few other code tweaks.
+
 0.14  -  Changed direct links to links with forced download flag
          set to make the choice one with known outcomes; either
          view a PDF in the browser or download it.

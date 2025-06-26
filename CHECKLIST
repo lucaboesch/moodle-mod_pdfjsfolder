@@ -1,11 +1,7 @@
 New pdf.js checklist
 ---------------------
-*  Pull newest version
-*  Build pdf.js with `node make generic`
-*  Copy pdj.js/build/generic/ into pdf.js-[old short hash]
-*  Get new short hash with `git log abbrev-commit`
-*  Rename folder to pdf.js-[new short hash] with `git mv`
 *  Update reference to short hash in renderer.php
+*  Implement "Privacy API" : https://moodledev.io/docs/5.1/apis/subsystems/privacy
 
 New release checklist
 ---------------------

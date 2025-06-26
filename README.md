@@ -1,4 +1,6 @@
-Pdfjsfolder
+[![Moodle Plugin CI](https://github.com/acamacho-unige/moodle-mod_pdfjsfolder/actions/workflows/moodle-plugin-ci.yml/badge.svg)](https://github.com/acamacho-unige/moodle-mod_pdfjsfolder/actions/workflows/moodle-plugin-ci.yml)
+
+# PDF.js folder
 ---------
 How PDFs are opened in browsers seem to depend on many things, like which
 browser the user is using, the configuration of PDF readers and which
@@ -9,41 +11,36 @@ In most cases, the handling of PDFs should be left under the control of
 the user but in some cases there are valid reasons to try to standardize
 the experience.
 
-Pdfjsfolder is a Moodle 2.4+ plugin intended to make sure that PDFs always
+PDF.js folder is a Moodle 4.5+ plugin intended to make sure that PDFs always
 open in the browser (with the option of downloading), regardless of if the
 user is using a desktop or mobile device.
 
-Pdfjsfolder is built on [PDF.js](https://github.com/mozilla/pdf.js):
+PDF.js folder is built on [PDF.js](https://github.com/mozilla/pdf.js):
 
 *  PDF.js is Portable Document Format (PDF) viewer that is built with HTML5.
 *  PDF.js is community-driven and supported by Mozilla Labs. Our goal is to
    create a general-purpose, web standards-based platform for parsing and
    rendering PDFs.
-*  PDF.js will not work in all browsers,
-   [most notably IE8 and below](https://github.com/mozilla/pdf.js/wiki/Frequently-Asked-Questions#what-browsers-are-supported).
-*  PDF.js, at the moment, performs rather poorly on mobile devices with
-   limited memory and processing power (which covers almost all devices
-   out there, new and old). Some PDFs are fine but others are too big,
-   to complex, contain too many images, etc. Your mileage may vary.
+*  PDF.js, can perform poorly on mobile devices with limited memory and processing power.
+   Some PDFs are fine but others are too big, to complex, contain too many images, etc.
+   Your mileage may vary.
 
-Pdfjsfolder works much like the regular folder resource in Moodle and handles
-images as well as PDFs (for practical reasons). Zip files can be uploaded and
-unpacked.
+PDF.js folder works much like the regular folder resource in Moodle, but only
+files with .pdf type(s) can be uploaded.
 
 There are a few options:
 
-*  Should PDFs open in the current tab/window or open in a new tab/window?
-*  Should folder contents be shown inline on the course page or on a separate
-   page?
-*  Should subfolders be shown expanded or not?
-*  Should download links be displayed for each PDF so that users with devices
-   not capable of displaying all PDFs through PDF.js have another option?
+*  Should files open in the current tab/window or in a new one ?
+*  Should subfolders be shown expanded or not ?
+*  Should download links be displayed for each PDF ?
+*  Should a warning about changes made in PDF.js not being saved/persisted when window/tab closes ?
 
 Example screenshots
 -------------------
-![A screenshot](pix/screenshot-1.png?raw=true)
 
-![Another screenshot](pix/screenshot-2.png?raw=true)
+![View](pix/screenshot-view.png?raw=true)
+
+![Settings](pix/screenshot-settings.png?raw=true)
 
 Installation
 ------------
