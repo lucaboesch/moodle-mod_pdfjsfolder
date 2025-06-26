@@ -29,8 +29,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Execute pdfjsfolder upgrade from the given old version.
  *
@@ -42,10 +40,21 @@ function xmldb_pdfjsfolder_upgrade($oldversion) {
 
     $dbman = $DB->get_manager(); // Loads ddl manager and xmldb classes.
 
-    /*
-    if ($oldversion < 2013101800) {
+    if ($oldversion < 2025061206) {
+
+        // Define field autoimport to be added to publication.
+        $table = new xmldb_table('pdfjsfolder');
+
+        // Conditionally launch add field showfilechangeswarning.
+        $field = new xmldb_field('showfilechangeswarning');
+        $field->set_attributes(XMLDB_TYPE_INTEGER, '4', null, XMLDB_NOTNULL, null, '0', 'showfilechangeswarning');
+        if (!$dbman->field_exists($table, 'showfilechangeswarning')) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Assign savepoint reached.
+        upgrade_mod_savepoint(true, 2025061206, 'pdfjsfolder');
     }
-    */
 
     // Final return of upgrade result (true, all went good) to Moodle.
     return true;

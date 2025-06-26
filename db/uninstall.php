@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Keeps track of all DB(-structure) changes and other uninstall steps for mod_pdfjsfolder
  * @see uninstall_plugin()
  *
  * @package    mod_pdfjsfolder

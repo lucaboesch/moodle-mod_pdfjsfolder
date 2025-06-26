@@ -22,8 +22,6 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Standard base class for mod_pdfjsfolder.
  */
@@ -103,21 +101,21 @@ class pdfjsfolder {
         $add->course = $formdata->course;
         $add->courseid = $formdata->course;
         $add->intro = $formdata->intro;
-        $add->introformat = $formdata->introformat;
         $add->display = $formdata->display;
         $add->showexpanded = $formdata->showexpanded;
+        $add->showfilechangeswarning = $formdata->showfilechangeswarning;
         $add->openinnewtab = $formdata->openinnewtab;
 
         $returnid = $DB->insert_record('pdfjsfolder', $add);
         $this->instance = $DB->get_record('pdfjsfolder',
-                                          array('id' => $returnid),
+                                          ['id' => $returnid],
                                           '*',
                                           MUST_EXIST);
         $this->save_files($formdata);
 
         // Cache the course record.
         $this->course = $DB->get_record('course',
-                                        array('id' => $formdata->course),
+                                        ['id' => $formdata->course],
                                         '*',
                                         MUST_EXIST);
 
@@ -141,7 +139,7 @@ class pdfjsfolder {
 
         // Delete the instance.
         // Note: all context files are deleted automatically.
-        $DB->delete_records('pdfjsfolder', array('id' => $this->get_instance()->id));
+        $DB->delete_records('pdfjsfolder', ['id' => $this->get_instance()->id]);
 
         return $result;
     }
@@ -161,14 +159,14 @@ class pdfjsfolder {
         $update->timemodified = time();
         $update->course = $formdata->course;
         $update->intro = $formdata->intro;
-        $update->introformat = $formdata->introformat;
         $update->display = $formdata->display;
         $update->showexpanded = $formdata->showexpanded;
+        $update->showfilechangeswarning = $formdata->showfilechangeswarning;
         $update->openinnewtab = $formdata->openinnewtab;
 
         $result = $DB->update_record('pdfjsfolder', $update);
         $this->instance = $DB->get_record('pdfjsfolder',
-                                          array('id' => $update->id),
+                                          ['id' => $update->id],
                                           '*',
                                           MUST_EXIST);
         $this->save_files($formdata);
@@ -222,7 +220,7 @@ class pdfjsfolder {
             return $this->instance;
         }
         if ($this->get_course_module()) {
-            $params = array('id' => $this->get_course_module()->instance);
+            $params = ['id' => $this->get_course_module()->instance];
             $this->instance = $DB->get_record('pdfjsfolder',
                                               $params,
                                               '*',
@@ -313,7 +311,7 @@ class pdfjsfolder {
         if (!$this->context) {
             return null;
         }
-        $params = array('id' => $this->get_course_context()->instanceid);
+        $params = ['id' => $this->get_course_context()->instanceid];
         $this->course = $DB->get_record('course', $params, '*', MUST_EXIST);
 
         return $this->course;
@@ -370,9 +368,9 @@ class pdfjsfolder {
         global $DB;
 
         // Storage of files from the filemanager (pdfs).
-        $options = array('subdirs' => true,
+        $options = ['subdirs' => true,
                          'maxbytes' => 0,
-                         'maxfiles' => -1);
+                         'maxfiles' => -1];
         $draftitemid = $formdata->pdfs;
         if ($draftitemid) {
             file_save_draft_area_files(

@@ -15,14 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Define all the restore steps that will be used by the restore_pdfjsfolder_activity_task.
+ *
  * @package    mod_pdfjsfolder
  * @copyright  2013 Jonas Nockert <jonasnockert@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
-/**
- * Define all the restore steps that will be used by the
- * restore_pdfjsfolder_activity_task.
  */
 
 /**
@@ -36,7 +33,7 @@ class restore_pdfjsfolder_activity_structure_step extends restore_activity_struc
      * @return array
      */
     protected function define_structure() {
-        $paths = array();
+        $paths = [];
         $paths[] = new restore_path_element('pdfjsfolder',
                                             '/activity/pdfjsfolder');
 
@@ -46,8 +43,10 @@ class restore_pdfjsfolder_activity_structure_step extends restore_activity_struc
 
     /**
      * Restore pdfjsfolder.
+     *
+     * @param  stdClass $data
      */
-    protected function process_pdfjsfolder($data) {
+    protected function process_pdfjsfolder(stdClass $data) {
         global $DB;
 
         $data = (object)$data;

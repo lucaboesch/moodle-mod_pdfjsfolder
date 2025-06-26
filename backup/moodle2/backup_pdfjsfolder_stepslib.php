@@ -23,24 +23,25 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
-
 /**
  * Define the complete pdfjsfolder structure for backup, with file
  * and id annotations.
  */
 class backup_pdfjsfolder_activity_structure_step extends backup_activity_structure_step {
 
+    /**
+     * Define structure function.
+     */
     protected function define_structure() {
         // Define each element separated.
         $pdfjsfolder = new backup_nested_element(
             'pdfjsfolder',
-            array('id'),
-            array('name', 'intro', 'introformat', 'timecreated', 'timemodified'));
+            ['id'],
+            ['name', 'intro', 'introformat', 'timecreated', 'timemodified']);
 
         // Define sources.
         $pdfjsfolder->set_source_table('pdfjsfolder',
-                                 array('id' => backup::VAR_ACTIVITYID));
+                                 ['id' => backup::VAR_ACTIVITYID]);
 
         // Define file annotations.
         $pdfjsfolder->annotate_files('mod_pdfjsfolder', 'intro', null);

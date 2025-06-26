@@ -31,6 +31,13 @@ require_once($CFG->dirroot . '/course/moodleform_mod.php');
 require_once(dirname(__FILE__) . '/locallib.php');
 require_once($CFG->libdir . '/filelib.php');
 
+/**
+ * Form for creating and editing mod_publication instances
+ *
+ * @package    mod_pdfjsfolder
+ * @copyright  2013 Jonas Nockert <jonasnockert@gmail.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class mod_pdfjsfolder_mod_form extends moodleform_mod {
     /**
      * Defines the pdfjsfolder instance configuration form.
@@ -49,7 +56,7 @@ class mod_pdfjsfolder_mod_form extends moodleform_mod {
                            get_string('general', 'form'));
         $mform->addElement('text',
                            'name',
-                           get_string('name'), array('size' => '48'));
+                           get_string('name'), ['size' => '48']);
         if (!empty($CFG->formatstringstriptags)) {
             $mform->setType('name', PARAM_TEXT);
         } else {
@@ -61,16 +68,24 @@ class mod_pdfjsfolder_mod_form extends moodleform_mod {
                         'maxlength',
                         255,
                         'client');
-        $this->add_intro_editor(false);
+
+        $this->standard_intro_elements();
 
         // Option for showing folder inline or on separate page.
         $mform->addElement(
             'select',
             'display',
             get_string('display', 'pdfjsfolder'),
-            array(PDFJS_FOLDER_DISPLAY_PAGE => get_string('displaypage', 'pdfjsfolder'),
-                  PDFJS_FOLDER_DISPLAY_INLINE => get_string('displayinline', 'pdfjsfolder')));
+            [PDFJS_FOLDER_DISPLAY_PAGE => get_string('displaypage', 'pdfjsfolder'),
+                  PDFJS_FOLDER_DISPLAY_INLINE => get_string('displayinline', 'pdfjsfolder')]);
         $mform->addHelpButton('display', 'display', 'pdfjsfolder');
+
+        // Option for showing or not warning about file changes storage.
+        $mform->addElement('advcheckbox',
+                           'showfilechangeswarning',
+                           get_string('showfilechangeswarning', 'pdfjsfolder'));
+        $mform->addHelpButton('showfilechangeswarning', 'showfilechangeswarning', 'pdfjsfolder');
+        $mform->setDefault('showfilechangeswarning', $config->showfilechangeswarning);
 
         // Option for showing sub-folders expanded or collapsed.
         $mform->addElement('advcheckbox',
@@ -92,10 +107,10 @@ class mod_pdfjsfolder_mod_form extends moodleform_mod {
                            get_string('pdf_fieldset', 'pdfjsfolder'));
 
         // Folder file manager.
-        $options = array('subdirs' => true,
+        $options = ['subdirs' => true,
                          'maxbytes' => 0,
                          'maxfiles' => -1,
-                         'accepted_types' => array('.pdf', '.zip', 'web_image'));
+                         'accepted_types' => ['.pdf']];
         $mform->addElement(
             'filemanager',
             'pdfs',
@@ -115,14 +130,14 @@ class mod_pdfjsfolder_mod_form extends moodleform_mod {
     /**
      * Prepares the form before data are set.
      *
-     * @param array $data to be set
+     * @param array $defaultvalues to be set
      * @return void
      */
     public function data_preprocessing(&$defaultvalues) {
         if ($this->current->instance) {
-            $options = array('subdirs' => true,
+            $options = ['subdirs' => true,
                              'maxbytes' => 0,
-                             'maxfiles' => -1);
+                             'maxfiles' => -1];
             $draftitemid = file_get_submitted_draft_itemid('pdfs');
             file_prepare_draft_area($draftitemid,
                                     $this->context->id,
@@ -142,7 +157,7 @@ class mod_pdfjsfolder_mod_form extends moodleform_mod {
      * @return array eventual errors indexed by the field name
      */
     public function validation($data, $files) {
-        $errors = array();
+        $errors = [];
 
         // On-view completion can not work together with display
         // inline option.

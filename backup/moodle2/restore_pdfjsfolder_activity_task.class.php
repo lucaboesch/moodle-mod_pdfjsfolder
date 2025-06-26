@@ -28,6 +28,13 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot .
              '/mod/pdfjsfolder/backup/moodle2/restore_pdfjsfolder_stepslib.php');
 
+/**
+ * Pdfjsfolder restore class
+ *
+ * @package    mod_pdfjsfolder
+ * @copyright  2013 Jonas Nockert <jonasnockert@gmail.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class restore_pdfjsfolder_activity_task extends restore_activity_task {
     /**
      * Define (add) particular settings this activity can have.
@@ -52,10 +59,10 @@ class restore_pdfjsfolder_activity_task extends restore_activity_task {
      *
      * @return array
      */
-    static public function define_decode_contents() {
-        $contents = array();
+    public static function define_decode_contents() {
+        $contents = [];
         $contents[] = new restore_decode_content('pdfjsfolder',
-                                                 array('intro'),
+                                                 ['intro'],
                                                  'pdfjsfolder');
         return $contents;
     }
@@ -66,8 +73,8 @@ class restore_pdfjsfolder_activity_task extends restore_activity_task {
      *
      * @return array
      */
-    static public function define_decode_rules() {
-        $rules = array();
+    public static function define_decode_rules() {
+        $rules = [];
         $rules[] = new restore_decode_rule('PDFJSFOLDERVIEWBYID',
                                            '/mod/pdfjsfolder/view.php?id=$1',
                                            'course_module');
@@ -78,14 +85,15 @@ class restore_pdfjsfolder_activity_task extends restore_activity_task {
     }
 
     /**
-     * Define the restore log rules that will be applied by the
-     * {@link restore_logs_processor} when restoring pdfjsfolder logs.
-     * It must return one array of {@link restore_log_rule} objects.
+     * Define the restore log rules that will be applied by the restore_logs_processor when restoring pdfjsfolder logs.
+     * {@link https://github.com/moodle/moodle/blob/main/backup/util/helper/restore_logs_processor.class.php}
+     *
+     * It must return one array of restore_log_rule objects.
      *
      * @return array
      */
-    static public function define_restore_log_rules() {
-        $rules = array();
+    public static function define_restore_log_rules() {
+        $rules = [];
         $rules[] = new restore_log_rule('pdfjsfolder',
                                         'add',
                                         'view.php?id={course_module}',
@@ -102,9 +110,9 @@ class restore_pdfjsfolder_activity_task extends restore_activity_task {
     }
 
     /**
-     * Define the restore log rules that will be applied by the
-     * {@link restore_logs_processor} when restoring course logs.
-     * It must return one array of {@link restore_log_rule} objects.
+     * Define the restore log rules that will be applied by the when restoring course logs.
+     * {@link https://github.com/moodle/moodle/blob/main/backup/util/helper/restore_logs_processor.class.php}
+     * It must return one array of restore_log_rule objects.
      *
      * Note this rules are applied when restoring course logs by the
      * restore final task, but are defined here at activity level.
@@ -112,8 +120,8 @@ class restore_pdfjsfolder_activity_task extends restore_activity_task {
      *
      * @return array
      */
-    static public function define_restore_log_rules_for_course() {
-        $rules = array();
+    public static function define_restore_log_rules_for_course() {
+        $rules = [];
         $rules[] = new restore_log_rule('pdfjsfolder',
                                         'view all',
                                         'index.php?id={course}',

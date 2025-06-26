@@ -28,8 +28,8 @@ if ($ADMIN->fulltree) {
     require_once($CFG->libdir . '/resourcelib.php');
 
     $displayoptions = resourcelib_get_displayoptions(
-        array(RESOURCELIB_DISPLAY_OPEN, RESOURCELIB_DISPLAY_POPUP));
-    $defaultdisplayoptions = array(RESOURCELIB_DISPLAY_OPEN);
+        [RESOURCELIB_DISPLAY_OPEN, RESOURCELIB_DISPLAY_POPUP]);
+    $defaultdisplayoptions = [RESOURCELIB_DISPLAY_OPEN];
 
     // Options heading.
     $settings->add(
@@ -49,6 +49,13 @@ if ($ADMIN->fulltree) {
         new admin_setting_heading('pdfjsfolder_defaults',
                                   get_string('pdfjsfolder_defaults_heading', 'pdfjsfolder'),
                                   get_string('pdfjsfolder_defaults_text', 'pdfjsfolder')));
+
+    // Default hide warning message about file editing storage.
+    $settings->add(
+        new admin_setting_configcheckbox('pdfjsfolder/showfilechangeswarning',
+                                         get_string('showfilechangeswarning', 'pdfjsfolder'),
+                                         get_string('showfilechangeswarning_help', 'pdfjsfolder'),
+                                         0));
 
     // Default show expanded flag.
     $settings->add(

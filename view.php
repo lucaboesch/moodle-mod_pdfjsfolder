@@ -40,28 +40,23 @@ if ($pdfjsfolder->get_instance()->display == PDFJS_FOLDER_DISPLAY_INLINE) {
     // Get sectionid for fragment id section references to work.
     $sectionid = $DB->get_field('course_sections',
                                 'section',
-                                array('id' => $cm->section,
-                                      'course' => $course->id),
+                                ['id' => $cm->section,
+                                      'course' => $course->id],
                                 MUST_EXIST);
     redirect(course_get_url($course, $sectionid));
 }
 
 $PAGE->set_pagelayout('incourse');
 
-$url = new moodle_url('/mod/pdfjsfolder/view.php', array('id' => $cm->id));
+$url = new moodle_url('/mod/pdfjsfolder/view.php', ['id' => $cm->id]);
 $PAGE->set_url($url);
 
 // Update 'viewed' state if required by completion system.
 $completion = new completion_info($course);
 $completion->set_module_viewed($cm);
 
-// Log viewing.
-add_to_log($course->id,
-           'pdfjsfolder',
-           'view',
-           $url,
-           $pdfjsfolder->get_instance()->id,
-           $cm->id);
+$PAGE->add_body_class('limitedwidth');
 
-$renderer = $PAGE->get_renderer('mod_pdfjsfolder');
-echo $renderer->render_pdfjsfolder($pdfjsfolder);
+$output = $PAGE->get_renderer('mod_pdfjsfolder');
+
+echo $output->render_pdfjsfolder($pdfjsfolder);

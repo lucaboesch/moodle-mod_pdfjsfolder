@@ -33,10 +33,11 @@ class mod_pdfjsfolder_renderer extends plugin_renderer_base {
     /**
      * Renders the pdfjsfolder page header.
      *
-     * @param pdfjsfolder pdfjsfolder
+     * @param pdfjsfolder $pdfjsfolder
+     * @param cm_info $cm
      * @return string
      */
-    public function pdf_header($pdfjsfolder, cm_info $cm) {
+    public function pdf_header(pdfjsfolder $pdfjsfolder, cm_info $cm) {
         $output = '';
 
         if (method_exists($cm, 'get_formatted_name')) {
@@ -53,15 +54,17 @@ class mod_pdfjsfolder_renderer extends plugin_renderer_base {
         $this->page->set_heading($this->page->course->fullname);
 
         $output .= $this->output->header();
-        $output .= $this->output->heading($name, 3);
 
-        if (!empty($pdfjsfolder->get_instance()->intro)) {
-            $output .= $this->output->box_start('generalbox boxaligncenter', 'intro');
-            $output .= format_module_intro('pdfjsfolder',
-                                           $pdfjsfolder->get_instance(),
-                                           $cm->id);
-            $output .= $this->output->box_end();
+        // Show warning if enabled.
+        if ( $pdfjsfolder->get_instance()->showfilechangeswarning == "1" ) {
+
+            $output .= '<div class="alert alert-warning" role="alert">';
+            $output .= get_string('showfilechangeswarning_text', 'pdfjsfolder');
+            $output .= '</div>';
+
         }
+
+        $output .= $this->output->heading($name, 3);
 
         return $output;
     }
@@ -78,10 +81,10 @@ class mod_pdfjsfolder_renderer extends plugin_renderer_base {
     /**
      * Render the pdfjsfolder page
      *
-     * @param pdfjsfolder pdfjsfolder
+     * @param pdfjsfolder $pdfjsfolder
      * @return string The page output.
      */
-    public function render_pdfjsfolder($pdfjsfolder) {
+    public function render_pdfjsfolder(pdfjsfolder $pdfjsfolder) {
         $output = '';
 
         $coursemodule = $pdfjsfolder->get_course_module();
@@ -140,27 +143,28 @@ class mod_pdfjsfolder_renderer extends plugin_renderer_base {
     /**
      * Utility function for creating the pdf folder HTML.
      *
-     * @param int $contextid
      * @param pdfjsfolder $pdfjsfolder
      * @param cm_info $cm
      * @return string HTML
      */
-    protected function get_pdf_folder_html(pdfjsfolder $pdfjsfolder,
-                                           cm_info $cm) {
+    protected function get_pdf_folder_html(pdfjsfolder $pdfjsfolder, cm_info $cm) {
         $output = '';
         $tree = $this->util_get_area_tree($pdfjsfolder->get_context()->id,
                                           'pdfs');
 
         $tree['dirname'] = $cm->name;
-        $toptree = array('files' => array(),
-                         'subdirs' => array($tree));
+        $toptree = ['files' => [],
+                         'subdirs' => [$tree]];
 
         $openinnewtab = $pdfjsfolder->get_instance()->openinnewtab;
+        $showfilechangeswarning = $pdfjsfolder->get_instance()->showfilechangeswarning;
+
         $showdownloadlinks = $pdfjsfolder->get_default_config()->showdownloadlinks;
 
         $output .= $this->htmlize_folder($tree,
                                          $toptree,
                                          $openinnewtab,
+                                         $showfilechangeswarning,
                                          $showdownloadlinks);
 
         return $output;
@@ -172,42 +176,45 @@ class mod_pdfjsfolder_renderer extends plugin_renderer_base {
      * @param array $tree
      * @param array $dir
      * @param boolean $openinnewtab
+     * @param boolean $showfilechangeswarning
      * @param boolean $showdownloadlinks
      * @return string HTML
      */
     protected function htmlize_folder($tree,
                                       $dir,
                                       $openinnewtab,
+                                      $showfilechangeswarning,
                                       $showdownloadlinks) {
-        if (empty($dir['subdirs']) and empty($dir['files'])) {
+        if (empty($dir['subdirs']) && empty($dir['files'])) {
             return '';
         }
 
         $output = '<ul>';
 
         foreach ($dir['subdirs'] as $subdir) {
-            $icon = new pix_icon(file_folder_icon(24),
+            $icon = new pix_icon(file_folder_icon(),
                                  $subdir['dirname'],
                                  'moodle');
             $imagehtml = $this->output->render($icon);
             $iconhtml = html_writer::tag(
                 'span',
                 $imagehtml,
-                array('class' => 'fp-icon'));
+                ['class' => 'fp-icon']);
             $namehtml = html_writer::tag(
                 'span',
                 s($subdir['dirname']),
-                array('class' => 'fp-filename'));
+                ['class' => 'fp-filename']);
             $divhtml = html_writer::tag(
                 'div',
                 $iconhtml . $namehtml ,
-                array('class' => 'fp-filename-icon'));
+                ['class' => 'fp-filename-icon']);
 
             $output .= html_writer::tag(
                 'li',
                 $divhtml . $this->htmlize_folder($tree,
                                                  $subdir,
                                                  $openinnewtab,
+                                                 $showfilechangeswarning,
                                                  $showdownloadlinks));
         }
 
@@ -234,33 +241,31 @@ class mod_pdfjsfolder_renderer extends plugin_renderer_base {
             if (file_extension_in_typegroup($filename, 'web_image')) {
                 $image = $fileurl->out(
                     false,
-                    array('preview' => 'tinyicon',
-                          'oid' => $pdf->get_timemodified()));
-                $image = html_writer::empty_tag('img', array('src' => $image));
+                    ['preview' => 'tinyicon',
+                          'oid' => $pdf->get_timemodified()]);
+                $image = html_writer::empty_tag('img', ['src' => $image]);
                 $url = $fileurl;
                 $isimage = true;
             } else {
-                $icon = new pix_icon(file_file_icon($pdf, 24),
-                                     $filename,
-                                     'moodle');
+                $icon = new pix_icon(file_file_icon($pdf), $filename, 'moodle');
                 $image = $this->output->render($icon);
 
                 $pdfjsfolderurl = new moodle_url(
-                    '/mod/pdfjsfolder/pdf.js-585a3d0/web/viewer.html');
+                    '/mod/pdfjsfolder/pdfjs-5.1.91-dist/web/viewer.html');
                 $url = $pdfjsfolderurl . '?file=' . $fileurl;
                 $isimage = false;
             }
 
             if ($openinnewtab) {
-                $linkoptions = array('target' => '_blank');
+                $linkoptions = ['target' => '_blank'];
             } else {
-                $linkoptions = array();
+                $linkoptions = [];
             }
 
             $fileicon = html_writer::tag(
-                'span', $image, array('class' => 'fp-icon'));
+                'span', $image, ['class' => 'fp-icon']);
             $filenamespan = html_writer::tag(
-                'span', $filename, array('class' => 'fp-filename'));
+                'span', $filename, ['class' => 'fp-filename']);
             $filelink = html_writer::link(
                 $url,
                 $fileicon . $filenamespan,
@@ -277,7 +282,7 @@ class mod_pdfjsfolder_renderer extends plugin_renderer_base {
             $filespan = html_writer::tag(
                 'span',
                 $filelink,
-                array('class' => 'fp-filename-icon'));
+                ['class' => 'fp-filename-icon']);
 
             $output .= html_writer::tag('li', $filespan);
         }
@@ -313,8 +318,13 @@ class mod_pdfjsfolder_renderer extends plugin_renderer_base {
             $showexpanded = false;
         }
 
+        $showwarning = false;
+        if (!empty($pdfjsfolder->get_instance()->showwarning)) {
+            $showwarning = true;
+        }
+
         $this->page->requires->js_init_call('M.mod_pdfjsfolder.init_tree',
-                                            array($id, $showexpanded));
+                                            [$id, $showexpanded]);
         return $output;
     }
 }

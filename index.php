@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Displays a list of all mod_pdfjsfolder instances in course
+ *
  * @package    mod_pdfjsfolder
  * @copyright  2013 Jonas Nockert
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -24,7 +26,7 @@ require('../../config.php');
 
 $id = required_param('id', PARAM_INT); // Course id.
 
-$course = $DB->get_record('course', array('id' => $id), '*', MUST_EXIST);
+$course = $DB->get_record('course', ['id' => $id], '*', MUST_EXIST);
 
 require_course_login($course, true);
 $PAGE->set_pagelayout('incourse');
@@ -42,7 +44,7 @@ $strname         = get_string('name');
 $strintro        = get_string('moduleintro');
 $strlastmodified = get_string('lastmodified');
 
-$PAGE->set_url('/mod/pdfjsfolder/index.php', array('id' => $course->id));
+$PAGE->set_url('/mod/pdfjsfolder/index.php', ['id' => $course->id]);
 $PAGE->set_title($course->shortname.': '.$strpdfs);
 $PAGE->set_heading($course->fullname);
 $PAGE->navbar->add($strpdfs);
@@ -62,11 +64,11 @@ $table = new html_table();
 $table->attributes['class'] = 'generaltable mod_index';
 
 if ($usesections) {
-    $table->head  = array ($strsectionname, $strname, $strintro);
-    $table->align = array ('center', 'left', 'left');
+    $table->head  = [$strsectionname, $strname, $strintro];
+    $table->align = ['center', 'left', 'left'];
 } else {
-    $table->head  = array ($strlastmodified, $strname, $strintro);
-    $table->align = array ('left', 'left', 'left');
+    $table->head  = [$strlastmodified, $strname, $strintro];
+    $table->align = ['left', 'left', 'left'];
 }
 
 $modinfo = get_fast_modinfo($course);
@@ -95,13 +97,14 @@ foreach ($pdffolders as $pdffolder) {
                 '" class="activityicon" alt="' .
                 get_string('modulename', $cm->modname) . '" /> ';
     }
+
     // Dim hidden modules.
     $class = $pdffolder->visible ? '' : 'class="dimmed"';
-    $table->data[] = array (
+    $table->data[] = [
         $printsection,
         "<a $class $extra href=\"view.php?id=$cm->id\">" .
             $icon . format_string($pdffolder->name) . "</a>",
-        format_module_intro('pdfjsfolder', $pdffolder, $cm->id));
+        format_module_intro('pdfjsfolder', $pdffolder, $cm->id)];
 }
 
 echo html_writer::table($table);
